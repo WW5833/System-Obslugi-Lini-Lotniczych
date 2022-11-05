@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>System_Obslugi_Lini_Lotniczych</RootNamespace>
+    <RootNamespace>LotSystem</RootNamespace>
   </PropertyGroup>
 
 </Project>

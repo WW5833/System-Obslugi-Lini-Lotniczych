@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace System_Obslugi_Lini_Lotniczych
+namespace LotSystem
 {
     internal class Program
     {
