@@ -16,6 +16,9 @@ namespace LotSystem.Database.Models
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
 
+        public UserFlags Flags { get; set; }
+
         public ICollection<Ticket> Tickets { get; set; } = new HashSet<Ticket>();
+
     }
 }
