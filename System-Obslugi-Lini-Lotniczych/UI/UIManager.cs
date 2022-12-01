@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using LotSystem.Logger.API;
 using LotSystem.UI.Windows;
 
 namespace LotSystem.UI
@@ -13,30 +15,32 @@ namespace LotSystem.UI
 
         public readonly Dictionary<string, IWindow> Windows = new();
 
-        private IWindow _defaultWindow;
+        private ILogger _logger;
+
+        private IWindow _defaultWindow; 
         private IWindow _currentWindow;
         private IWindow _targetWindow;
-        private Thread _uiThread;
+        private Task _uiThread;
         public Guid? CurrentSessionId { get; set; }
         private bool _enabled = true;
 
-        public void Start(Dictionary<Type, object> injectableTypes)
+        public void Start(ILogger logger, Dictionary<Type, object> injectableTypes)
         {
-            RegisterWindows(injectableTypes);
+            _logger = logger;
 
-            _enabled = true;
-            _uiThread = new Thread(UILoop);
+            RegisterWindows(injectableTypes);
 
             _targetWindow = _defaultWindow = Windows["default"];
 
-            _uiThread.Start();
+            _enabled = true;
+            _uiThread = UILoop();
         }
 
-        private void UILoop()
+        private async Task UILoop()
         {
             while(_enabled)
             {
-                Thread.Sleep(100);
+                await Task.Delay(100);
 
                 if(_currentWindow != _targetWindow)
                 {
@@ -50,7 +54,14 @@ namespace LotSystem.UI
                     _currentWindow.Open();
                 }
 
-                _currentWindow.Update();
+                try
+                {
+                    await _currentWindow.Update();
+                }
+                catch(Exception ex)
+                {
+                    _logger.Error(ex);
+                }
             }
         }
 

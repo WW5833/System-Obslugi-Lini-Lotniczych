@@ -44,6 +44,7 @@ namespace LotSystem.Repositories
                 _context.Users.Add(user);
 
                 await _context.SaveChangesAsync(cancellationToken);
+                _context.ChangeTracker.Clear();
             }
             finally
             {
@@ -59,6 +60,7 @@ namespace LotSystem.Repositories
                 _context.Users.Update(user);
 
                 await _context.SaveChangesAsync(cancellationToken);
+                _context.ChangeTracker.Clear();
             }
             finally
             {
@@ -152,6 +154,7 @@ namespace LotSystem.Repositories
                 _context.Sessions.Add(session);
 
                 await _context.SaveChangesAsync(cancellationToken);
+                _context.ChangeTracker.Clear();
 
                 return session.Id;
             }
@@ -174,6 +177,7 @@ namespace LotSystem.Repositories
                 _context.Update(session);
 
                 await _context.SaveChangesAsync(cancellationToken);
+                _context.ChangeTracker.Clear();
             }
             finally
             {

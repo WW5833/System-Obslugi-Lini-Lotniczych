@@ -74,26 +74,71 @@ namespace LotSystem.UI.Windows
             return intResponse;
         }
 
+        private enum PromptKeyResponse
+        {
+            KEY,
+            SUBMIT,
+            REMOVE_ONE,
+            CLEAR,
+        }
+
+        private static PromptKeyResponse PromptHandleKey(out ConsoleKeyInfo key)
+        {
+            key = Console.ReadKey(true);
+            switch (key.Key)
+            {
+                case ConsoleKey.Enter:
+                    return PromptKeyResponse.SUBMIT;
+
+                case ConsoleKey.Backspace:
+                    return PromptKeyResponse.REMOVE_ONE;
+                case ConsoleKey.Clear:
+                    return PromptKeyResponse.CLEAR;
+
+                case ConsoleKey.Escape:
+                    throw new ReturnToParentWindowException();
+
+                default:
+                    return PromptKeyResponse.KEY;
+            }
+        }
+
+        internal sealed class ReturnToParentWindowException : Exception
+        {
+        }
+
+        private static void OnInvalidResponse(string response)
+        {
+            Console.WriteLine($"\"{response}\" is not a response");
+            Console.ReadKey();
+            Console.WriteLine();
+            Console.CursorTop -= 3;
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 100; j++)
+                    Console.Write(" ");
+                Console.WriteLine();
+            }
+
+            Console.CursorTop -= 3;
+        }
+
+        private static string RemoveOneChar(string input)
+        {
+            Console.CursorLeft--;
+            Console.Write(" ");
+            Console.CursorLeft--;
+
+            return input[..^1];
+        }
+
         public static string Prompt(this IWindow window, string prompt, Func<string, bool> validator)
         {
             string response = null;
             do
             {
                 if (response is not null)
-                {
-                    Console.WriteLine($"\"{response}\" is not a response");
-                    Console.ReadKey();
-                    Console.WriteLine();
-                    Console.CursorTop -= 3;
-                    for (int i = 0; i < 3; i++)
-                    {
-                        for (int j = 0; j < 100; j++)
-                            Console.Write(" ");
-                        Console.WriteLine();
-                    }
-
-                    Console.CursorTop -= 3;
-                }
+                    OnInvalidResponse(response);
 
                 Console.Write(prompt + ": ");
 
@@ -111,48 +156,135 @@ namespace LotSystem.UI.Windows
             do
             {
                 if (response is not null)
-                {
-                    Console.WriteLine($"\"{response}\" is not a response");
-                    Console.ReadKey();
-                    Console.WriteLine();
-                    Console.CursorTop -= 3;
-                    for (int i = 0; i < 3; i++)
-                    {
-                        for (int j = 0; j < 100; j++)
-                            Console.Write(" ");
-                        Console.WriteLine();
-                    }
-
-                    Console.CursorTop -= 3;
-                }
+                    OnInvalidResponse(response);
 
                 Console.Write(prompt + ": ");
 
                 response = "";
                 ConsoleKeyInfo lastKey;
+                PromptKeyResponse result;
                 do
                 {
-                    lastKey = Console.ReadKey(true);
-                    if(lastKey.Key == ConsoleKey.Enter)
+                    result = PromptHandleKey(out lastKey);
+                    switch (result)
                     {
-                        break;
-                    }
+                        case PromptKeyResponse.REMOVE_ONE:
+                            if (response.Length == 0)
+                                continue;
 
-                    if(lastKey.Key == ConsoleKey.Backspace)
-                    {
-                        if (response.Length == 0)
+                            response = RemoveOneChar(response);
                             continue;
-                        response = response[..^1];
-                        Console.CursorLeft--;
-                        Console.Write(" ");
-                        Console.CursorLeft--;
-                        continue;
-                    }
 
-                    Console.Write("*");
-                    response += lastKey.KeyChar;
+                        case PromptKeyResponse.CLEAR:
+                            while (response.Length > 0)
+                                response = RemoveOneChar(response);
+                            continue;
+
+                        case PromptKeyResponse.KEY:
+                            Console.Write("*");
+                            response += lastKey.KeyChar;
+                            continue;
+                    }
                 }
-                while (lastKey.Key != ConsoleKey.Enter);
+                while (result != PromptKeyResponse.SUBMIT);
+
+                Console.WriteLine();
+            }
+            while (string.IsNullOrWhiteSpace(response));
+
+            return response;
+        }
+
+        public static string PromptPhoneNumber(this IWindow window, string prompt)
+        {
+            string response = null;
+            do
+            {
+                if (response is not null)
+                    OnInvalidResponse(response);
+
+                Console.Write(prompt + ": ");
+
+                response = "";
+                ConsoleKeyInfo lastKey;
+                PromptKeyResponse result;
+                do
+                {
+                    result = PromptHandleKey(out lastKey);
+                    switch (result)
+                    {
+                        case PromptKeyResponse.REMOVE_ONE:
+                            if (response.Length == 0)
+                                continue;
+
+                            if (response.Length % 3 == 0 && response.Length < 9)
+                            {
+                                Console.CursorLeft--;
+                                Console.Write(" ");
+                                Console.CursorLeft--;
+                            }
+
+                            response = response[..^1];
+                            Console.CursorLeft--;
+                            Console.Write(" ");
+                            Console.CursorLeft--;
+                            continue;
+
+                        case PromptKeyResponse.CLEAR:
+                            while (response.Length > 0)
+                            {
+                                if (response.Length % 3 == 0 && response.Length < 9)
+                                {
+                                    Console.CursorLeft--;
+                                    Console.Write(" ");
+                                    Console.CursorLeft--;
+                                }
+
+                                response = response[..^1];
+                                Console.CursorLeft--;
+                                Console.Write(" ");
+                                Console.CursorLeft--;
+                            }
+                            continue;
+
+                        case PromptKeyResponse.KEY:
+                            switch (lastKey.Key)
+                            {
+                                case ConsoleKey.D0:
+                                case ConsoleKey.NumPad0:
+                                case ConsoleKey.D1:
+                                case ConsoleKey.NumPad1:
+                                case ConsoleKey.D2:
+                                case ConsoleKey.NumPad2:
+                                case ConsoleKey.D3:
+                                case ConsoleKey.NumPad3:
+                                case ConsoleKey.D4:
+                                case ConsoleKey.NumPad4:
+                                case ConsoleKey.D5:
+                                case ConsoleKey.NumPad5:
+                                case ConsoleKey.D6:
+                                case ConsoleKey.NumPad6:
+                                case ConsoleKey.D7:
+                                case ConsoleKey.NumPad7:
+                                case ConsoleKey.D8:
+                                case ConsoleKey.NumPad8:
+                                case ConsoleKey.D9:
+                                case ConsoleKey.NumPad9:
+                                    if (response.Length >= 9)
+                                        continue;
+
+                                    Console.Write(lastKey.KeyChar);
+                                    response += lastKey.KeyChar;
+
+                                    if (response.Length % 3 == 0 && response.Length < 9)
+                                        Console.Write("-");
+                                    break;
+                            }
+                            break;
+                    }
+                }
+                while (result != PromptKeyResponse.SUBMIT);
+                
                 Console.WriteLine();
             }
             while (string.IsNullOrWhiteSpace(response));

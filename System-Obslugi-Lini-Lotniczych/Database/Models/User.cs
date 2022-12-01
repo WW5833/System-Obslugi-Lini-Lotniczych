@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LotSystem.Database.Models
 {
     [Table("users")]
+    [Index("Email", IsUnique = true)]
     public sealed class User
     {
         [Key] public int Id { get; set; }

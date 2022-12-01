@@ -5,6 +5,7 @@ using LotSystem.Logger.API;
 using LotSystem.Repositories;
 using LotSystem.Services.UserManagement;
 using LotSystem.Logger;
+using System.Threading;
 
 namespace LotSystem
 {
@@ -22,12 +23,15 @@ namespace LotSystem
 
             _userService = new UserService(new Repository(_logger), _logger, _emailService);
 
-            UIManager.Instance.Start(new Dictionary<Type, object>
+            UIManager.Instance.Start(_logger, new Dictionary<Type, object>
             {
                 { typeof(ILogger), _logger },
                 { typeof(IUserService), _userService },
                 { typeof(IEmailService), _emailService }
             });
+
+            while (true)
+                Thread.Sleep(1000);
         }
     }
 }
