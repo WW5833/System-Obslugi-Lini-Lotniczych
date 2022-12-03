@@ -1,13 +1,12 @@
 ﻿using System;
 
-namespace LotSystem.Database.Models
+namespace LotSystem.Database.Models;
+
+[Flags]
+public enum TicketFlags
 {
-    [Flags]
-    public enum TicketFlags
-    {
-        NONE = 0,
-        ADDITIONAL_LUGGAGE = 1 << 0,
-        ECONOMY_TICKET = 1 << 1,
-        BUSINESS_TICKET = 1 << 2,
-    }
+    NONE = 0,
+    ADDITIONAL_LUGGAGE = 1 << 0,
+    ECONOMY_TICKET = 1 << 1,
+    BUSINESS_TICKET = 1 << 2,
 }

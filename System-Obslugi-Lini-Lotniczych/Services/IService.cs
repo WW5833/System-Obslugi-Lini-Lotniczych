@@ -1,8 +1,7 @@
-﻿namespace LotSystem.Services
+﻿namespace LotSystem.Services;
+
+public interface IService
 {
-    public interface IService
-    {
-        void Start();
-        void Stop();
-    }
+    void Start();
+    void Stop();
 }

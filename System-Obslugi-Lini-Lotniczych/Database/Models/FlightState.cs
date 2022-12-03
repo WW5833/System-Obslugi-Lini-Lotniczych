@@ -1,10 +1,9 @@
-﻿namespace LotSystem.Database.Models
+﻿namespace LotSystem.Database.Models;
+
+public enum FlightState
 {
-    public enum FlightState
-    {
-        PENDING,
-        IN_PROGRESS,
-        LANDED,
-        CANCELED,
-    }
+    PENDING,
+    IN_PROGRESS,
+    LANDED,
+    CANCELED,
 }

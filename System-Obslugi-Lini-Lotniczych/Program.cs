@@ -6,32 +6,32 @@ using LotSystem.Repositories;
 using LotSystem.Services.UserManagement;
 using LotSystem.Logger;
 using System.Threading;
+using LotSystem.Services;
 
-namespace LotSystem
+namespace LotSystem;
+
+internal static class Program
 {
-    internal static class Program
+    private static IUserService userService;
+    private static IEmailService emailService;
+    private static ILogger logger;
+
+    private static void Main()
     {
-        private static IUserService _userService;
-        private static IEmailService _emailService;
-        private static ILogger _logger;
+        logger = new DebugLogger();
 
-        private static void Main()
+        Console.WriteLine("Starting ...");
+
+        userService = new UserService(new Repository(logger), logger, emailService);
+
+        UserInterfaceManager.Instance.Start(logger, new Dictionary<Type, object>
         {
-            _logger = new DebugLogger();
+            { typeof(ILogger), logger },
+            { typeof(IUserService), userService },
+            { typeof(IEmailService), emailService }
+        });
 
-            Console.WriteLine("Starting ...");
-
-            _userService = new UserService(new Repository(_logger), _logger, _emailService);
-
-            UIManager.Instance.Start(_logger, new Dictionary<Type, object>
-            {
-                { typeof(ILogger), _logger },
-                { typeof(IUserService), _userService },
-                { typeof(IEmailService), _emailService }
-            });
-
-            while (true)
-                Thread.Sleep(1000);
-        }
+        while (!Environment.HasShutdownStarted)
+            Thread.Sleep(1000);
     }
 }

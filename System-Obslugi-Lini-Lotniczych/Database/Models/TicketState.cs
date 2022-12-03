@@ -1,10 +1,9 @@
-﻿namespace LotSystem.Database.Models
+﻿namespace LotSystem.Database.Models;
+
+public enum TicketState
 {
-    public enum TicketState
-    {
-        AWAITING_PAYMENT,
-        PAYED,
-        BOARDED,
-        CANCELED,
-    }
+    AWAITING_PAYMENT,
+    PAYED,
+    BOARDED,
+    CANCELED,
 }

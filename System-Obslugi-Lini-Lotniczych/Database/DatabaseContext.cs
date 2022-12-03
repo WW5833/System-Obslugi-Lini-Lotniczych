@@ -3,7 +3,6 @@ using LotSystem.Logger;
 using LotSystem.Logger.API;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using System.IO;
 
 namespace LotSystem.Database;
 

@@ -1,6 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using LotSystem.Services.UserManagement;
+using LotSystem.UI.Windows.API;
 
 namespace LotSystem.UI.Windows;
 
@@ -22,56 +22,22 @@ public sealed class LoginWindow : Window
         var email = this.Prompt("Email", (x) => !string.IsNullOrWhiteSpace(x));
         var password = this.PromptPassword("password");
 
-        Console.WriteLine($"{email}: {password}");
         var response = await _userService.LoginUser(email, password);
 
-        if (response.Successfull)
-        {
-            UIManager.Instance.CurrentSessionId = response.SessionId;
-            OpenWindow("default");
-            return;
-        }
-        else
+        if (!response.Successfull)
         {
             Console.WriteLine($"Error: {response.Message}");
-        }
-    }
-}
-
-public sealed class RegisterWindow : Window
-{
-    private readonly IUserService _userService;
-
-    public RegisterWindow(IUserService userService)
-    {
-        _userService = userService;
-    }
-
-    public override string Id => "register";
-
-    public override string Title => "Register";
-
-    public override async Task Update()
-    {
-        var email = this.Prompt("Email", (x) => !string.IsNullOrWhiteSpace(x));
-        var fName = this.Prompt("First Name", (x) => !string.IsNullOrWhiteSpace(x));
-        var lName = this.Prompt("Last Name", (x) => !string.IsNullOrWhiteSpace(x));
-        var phone = this.PromptPhoneNumber("Phone Number");
-        var password = this.PromptPassword("Password");
-        var repeatedPassword = this.PromptPassword("Repeat Password");
-
-        Console.WriteLine($"{email}: {password}");
-        var response = await _userService.LoginUser(email, password);
-
-        if (response.Successfull)
-        {
-            UIManager.Instance.CurrentSessionId = response.SessionId;
-            OpenWindow("default");
+            Console.WriteLine("Press any key to continue ...");
+            Console.ReadLine();
             return;
         }
-        else
-        {
-            Console.WriteLine($"Error: {response.Message}");
-        }
+
+        UserInterfaceManager.Instance.CurrentSessionId = response.SessionId;
+
+        Console.WriteLine("Logged in successfully, Press any key to continue ...");
+        Console.ReadLine();
+
+        OpenWindow("default");
+
     }
 }
