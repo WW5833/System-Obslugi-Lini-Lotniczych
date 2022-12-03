@@ -12,13 +12,13 @@ public sealed class UserInterfaceManager
     private static UserInterfaceManager instance;
     public static UserInterfaceManager Instance => instance ??= new UserInterfaceManager();
 
-    public readonly Dictionary<string, IWindow> Windows = new();
+    private readonly Dictionary<string, IWindow> _windows = new();
 
     private ILogger _logger;
 
     private IWindow _defaultWindow;
     private readonly Stack<IWindow> _windowStack = new();
-    private Task _uiThread;
+
     public Guid? CurrentSessionId { get; set; }
     private bool _enabled = true;
 
@@ -28,11 +28,11 @@ public sealed class UserInterfaceManager
 
         RegisterWindows(injectableTypes);
 
-        _defaultWindow = Windows["default"];
+        _defaultWindow = _windows["default"];
         OpenWindow(_defaultWindow);
 
         _enabled = true;
-        _uiThread = UserInterfaceLoop();
+        _ = UserInterfaceLoop();
     }
 
     private async Task UserInterfaceLoop()
@@ -62,13 +62,13 @@ public sealed class UserInterfaceManager
 
     private void RegisterWindows(Dictionary<Type, object> injectableTypes)
     {
-        Windows.Clear();
+        _windows.Clear();
         foreach (var type in GetType().Assembly.GetTypes()
                      .Where(x => x.IsClass && !x.IsAbstract && x.GetInterfaces().Contains(typeof(IWindow))))
         {
             var window = type.CreateInstance<IWindow>(injectableTypes);
 
-            Windows.Add(window.Id, window);
+            _windows.Add(window.Id, window);
         }
     }
 
@@ -79,13 +79,13 @@ public sealed class UserInterfaceManager
             throw new ArgumentNullException(nameof(window));
         }
 
-        if (!Windows.TryGetValue(window, out var newWindow))
+        if (!_windows.TryGetValue(window, out var newWindow))
             throw new ArgumentException($"Window with name {window} not found", nameof(window));
 
         OpenWindow(newWindow);
     }
 
-    public void OpenWindow(IWindow window)
+    private void OpenWindow(IWindow window)
     {
         window.Open();
         _windowStack.Push(window);
