@@ -12,12 +12,11 @@ public sealed class UserInterfaceManager
     private static UserInterfaceManager instance;
     public static UserInterfaceManager Instance => instance ??= new UserInterfaceManager();
 
-    private readonly Dictionary<string, IWindow> _windows = new();
+    private readonly Dictionary<string, IGWindow> _windows = new();
 
     private ILogger _logger;
-
-    private IWindow _defaultWindow;
-    private readonly Stack<IWindow> _windowStack = new();
+    
+    private readonly Stack<IGWindow> _windowStack = new();
 
     public Guid? CurrentSessionId { get; set; }
     private bool _enabled = true;
@@ -28,33 +27,33 @@ public sealed class UserInterfaceManager
 
         RegisterWindows(injectableTypes);
 
-        _defaultWindow = _windows["default"];
-        OpenWindow(_defaultWindow);
+        _windowStack.Push(_windows["__entry-point"]);
+        _windowStack.Peek().Open();
 
         _enabled = true;
-        _ = UserInterfaceLoop();
+        Task.Run(GraphicsUserInterfaceLoop);
     }
 
-    private async Task UserInterfaceLoop()
+    private void GraphicsUserInterfaceLoop()
     {
         while (_enabled)
         {
-            await Task.Delay(100);
-
             try
             {
-                await _windowStack.Peek().Update();
-            }
-            catch(ReturnToParentWindowException)
-            {
-                _windowStack.Pop().Close();
-                if (_windowStack.Peek().PreserveContentOnTransferControl)
-                    _windowStack.Peek().Console.RewriteScreen();
-                else
-                    _windowStack.Peek().Open();
+                var key = Console.ReadKey(true);
+                var window = _windowStack.Peek();
+
+                if (key.Key == ConsoleKey.Escape)
+                {
+                    CloseCurrentWindow();
+                    continue;
+                }
+
+                window.OnKeyPressed(key);
             }
             catch (Exception ex)
             {
+                _logger.Error($"{(_windowStack.TryPeek(out var w) ? w.Title : "NO WINDOW")} caused an exception");
                 _logger.Error(ex);
             }
         }
@@ -64,9 +63,9 @@ public sealed class UserInterfaceManager
     {
         _windows.Clear();
         foreach (var type in GetType().Assembly.GetTypes()
-                     .Where(x => x.IsClass && !x.IsAbstract && x.GetInterfaces().Contains(typeof(IWindow))))
+                     .Where(x => x.IsClass && !x.IsAbstract && x.GetInterfaces().Contains(typeof(IGWindow))))
         {
-            var window = type.CreateInstance<IWindow>(injectableTypes);
+            var window = type.CreateInstance<IGWindow>(injectableTypes);
 
             _windows.Add(window.Id, window);
         }
@@ -85,9 +84,18 @@ public sealed class UserInterfaceManager
         OpenWindow(newWindow);
     }
 
-    private void OpenWindow(IWindow window)
+    public void OpenWindow(IGWindow window)
     {
-        window.Open();
+        window.Console.Parent = _windowStack.Peek().Console;
+
         _windowStack.Push(window);
+
+        window.Open();
+    }
+
+    public void CloseCurrentWindow()
+    {
+        _windowStack.Pop().Close();
+        _windowStack.Peek().Resume();
     }
 }

@@ -1,71 +1,30 @@
 ﻿using System;
-using System.Threading.Tasks;
-using LotSystem.Services.UserManagement;
 using LotSystem.UI.Windows.API;
+using LotSystem.UI.Windows.Elements;
+using LotSystem.UI.Windows.Elements.API;
 
 namespace LotSystem.UI.Windows;
 
-public sealed class MenuWindow : Window
+public sealed class MenuWindow : FullScreenWindow
 {
-    private readonly IUserService _userService;
+    public override UserInterfaceElement[] UserInterfaceElements { get; }
 
-    public MenuWindow(IUserService userService)
+    public MenuWindow()
     {
-        _userService = userService;
+        UserInterfaceElements = new UserInterfaceElement[] {
+            new Button(this, "Account", () => OpenWindow("account_info")),
+            new Separator(this),
+            new Button(this, "Exit", () => Environment.Exit(0)),
+        };
     }
 
     public override bool PreserveContentOnTransferControl => true;
     public override string Id => "default";
     public override string Title => "Menu";
 
-    public void Login()
+    public override void Resume()
     {
-        OpenWindow("login");
-    }
-
-    public async Task Logout()
-    {
-        await _userService.LogoutUser(UserInterfaceManager.Instance.CurrentSessionId!.Value);
-        UserInterfaceManager.Instance.CurrentSessionId = null;
-        Open();
-    }
-
-    public void Register()
-    {
-        OpenWindow("register");
-    }
-
-    public override async Task Update()
-    {
-        if (UserInterfaceManager.Instance.CurrentSessionId.HasValue)
-            Console.WriteLine("[1] - Logout");
-        else
-            Console.WriteLine("[1] - Login");
-        Console.WriteLine("[2] - Register");
-        Console.WriteLine();
-        Console.WriteLine("[0] - Exit");
-        var option = this.PromptSingleNumber("Select option", (x) => x is 1 or 2 or 0);
-
-        switch (option)
-        {
-            case 1:
-                if (UserInterfaceManager.Instance.CurrentSessionId.HasValue)
-                    await Logout();
-                else
-                    Login();
-                return;
-
-            case 2:
-                Register();
-                return;
-
-            case 0:
-                Console.WriteLine("Bye :)");
-                Environment.Exit(0);
-                return;
-
-            default:
-                throw new Exception("Invalid option, this should had been prevented by prompt validator");
-        }
+        base.Resume();
+        WriteTitle();
     }
 }

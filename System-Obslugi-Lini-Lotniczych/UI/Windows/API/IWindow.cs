@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace LotSystem.UI.Windows.API;
+﻿namespace LotSystem.UI.Windows.API;
 
 public interface IWindow
 {
@@ -10,6 +8,4 @@ public interface IWindow
     string Title { get; }
     void Open();
     void Close();
-
-    Task Update();
 }

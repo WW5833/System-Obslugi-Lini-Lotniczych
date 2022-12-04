@@ -1,28 +1,24 @@
-﻿using System.Threading.Tasks;
+﻿using JetBrains.Annotations;
 
 namespace LotSystem.UI.Windows.API;
 
+[PublicAPI]
 public abstract class Window : IWindow
 {
     public WindowUInterfaceManager Console { get; } = new();
 
-    public virtual bool PreserveContentOnTransferControl => true;
+    public abstract bool PreserveContentOnTransferControl { get; }
 
     public abstract string Id { get; }
 
     public abstract string Title { get; }
 
-    public virtual void Close()
-    {
-        Console.Clear();
-    }
-
     public virtual void Open()
     {
-        Console.Clear();
+    }
 
-        this.SetTitle();
-        this.WriteTitle();
+    public virtual void Close()
+    {
     }
 
     protected static void OpenWindow(string window)
@@ -30,5 +26,8 @@ public abstract class Window : IWindow
         UserInterfaceManager.Instance.OpenWindow(window);
     }
 
-    public abstract Task Update();
+    public void SetTitle()
+    {
+        System.Console.Title = this.Title;
+    }
 }

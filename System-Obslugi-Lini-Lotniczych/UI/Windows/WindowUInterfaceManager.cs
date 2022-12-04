@@ -1,21 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using JetBrains.Annotations;
 
 namespace LotSystem.UI.Windows;
 
 public class WindowUInterfaceManager
 {
+    [CanBeNull] public WindowUInterfaceManager Parent { get; set; }
+
     private readonly object _lock = new();
 
-    private readonly List<string> _screenLines = new() { string.Empty };
+    private readonly List<List<Character>> _screenLines = new() { new List<Character>() };
+
+    private readonly struct Character
+    {
+        public readonly char Char;
+        public readonly ConsoleColor ForegroundColor;
+        public readonly ConsoleColor BackgroundColor;
+
+        public Character(char c)
+        {
+            Char = c;
+            ForegroundColor = Console.ForegroundColor;
+            BackgroundColor = Console.BackgroundColor;
+        }
+
+        public static implicit operator Character (char c)
+        {
+            return new Character(c);
+        }
+
+        public static IEnumerable<Character> Convert(string str)
+        {
+            return str.Select(c => new Character(c));
+        }
+    }
 
     public void Clear()
     {
         lock (_lock)
         {
             _screenLines.Clear();
-            _screenLines.Add(string.Empty);
+            _screenLines.Add(new List<Character>());
             _cursorLeftPosition = 0;
             _cursorTopPosition = 0;
             Console.Clear();
@@ -33,7 +61,7 @@ public class WindowUInterfaceManager
 
         int offset;
         while ((offset = text.IndexOf('\n')) != -1)
-            _internalWriteLine(text.Substring(offset + 1));
+            _internalWriteLine(text[(offset + 1)..]);
     }
 
     public void RemoveOneChar()
@@ -53,9 +81,12 @@ public class WindowUInterfaceManager
 
         lock (_lock)
         {
-            while (_screenLines[_cursorTopPosition].Length < _cursorLeftPosition)
-                _screenLines[_cursorTopPosition] += " ";
-            _screenLines[_cursorTopPosition] = _screenLines[_cursorTopPosition].Insert(_cursorLeftPosition, text);
+            while (_screenLines[_cursorTopPosition].Count < _cursorLeftPosition + text.Length)
+                _screenLines[_cursorTopPosition].Add(' ');
+
+            _screenLines[_cursorTopPosition].RemoveRange(_cursorLeftPosition, text.Length);
+            _screenLines[_cursorTopPosition].InsertRange(_cursorLeftPosition, Character.Convert(text));
+
             _cursorLeftPosition += text.Length;
             Console.Write(text);
         }
@@ -63,7 +94,7 @@ public class WindowUInterfaceManager
 
     private void _internalWriteLine(string text)
     {
-        _screenLines.Add(text);
+        _screenLines.Add(new List<Character>(Character.Convert(text)));
         _cursorLeftPosition = 0;
         _cursorTopPosition++;
         Console.WriteLine();
@@ -80,7 +111,7 @@ public class WindowUInterfaceManager
     {
         lock (_lock)
         {
-            _screenLines.Add(string.Empty);
+            _screenLines.Add(new List<Character>());
             _cursorLeftPosition = 0;
             _cursorTopPosition++;
             Console.WriteLine();
@@ -95,7 +126,7 @@ public class WindowUInterfaceManager
             if (!intercept)
             {
                 _cursorLeftPosition++;
-                _screenLines[_cursorTopPosition] += key.KeyChar;
+                _screenLines[_cursorTopPosition].Add(key.KeyChar);
             }
             return key;
         }
@@ -106,8 +137,8 @@ public class WindowUInterfaceManager
         lock (_lock)
         {
             var line = Console.ReadLine();
-            _screenLines[_cursorTopPosition] += line;
-            _screenLines.Add(string.Empty);
+            _screenLines[_cursorTopPosition].AddRange(Character.Convert(line));
+            _screenLines.Add(new List<Character>());
             _cursorLeftPosition = 0;
             _cursorTopPosition++;
             return line;
@@ -119,7 +150,27 @@ public class WindowUInterfaceManager
         lock (_lock)
         {
             Console.Clear();
-            Console.Write(string.Join('\n', _screenLines));
+
+            Parent?.RewriteScreen();
+
+            Console.CursorTop = 0;
+            Console.CursorLeft = 0;
+
+            foreach (var line in _screenLines)
+            {
+                foreach (var character in line)
+                {
+                    Console.ForegroundColor = character.ForegroundColor;
+                    Console.BackgroundColor = character.BackgroundColor;
+                    Console.Write(character.Char);
+                }
+
+                Console.ResetColor();
+                Console.Write('\n');
+            }
+
+            Console.CursorTop = _cursorTopPosition;
+            Console.CursorLeft = _cursorLeftPosition;
         }
     }
 
@@ -139,7 +190,12 @@ public class WindowUInterfaceManager
         get => _cursorTopPosition;
         set
         {
-            lock (_lock) Console.CursorTop = _cursorTopPosition = value;
+            lock (_lock)
+            {
+                Console.CursorTop = _cursorTopPosition = value;
+                while (_screenLines.Count <= value)
+                    _screenLines.Add(new List<Character>());
+            }
         }
     }
 }
