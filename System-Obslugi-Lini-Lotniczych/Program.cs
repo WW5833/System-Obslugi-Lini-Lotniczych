@@ -1,6 +1,7 @@
 ﻿using LotSystem.UI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using LotSystem.Logger.API;
 using LotSystem.Repositories;

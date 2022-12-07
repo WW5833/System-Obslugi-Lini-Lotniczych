@@ -17,7 +17,7 @@ public sealed class RequireUserWindow : FullScreenWindow
             new Button(this, "Login", () => OpenWindow("login")),
             new Button(this, "Register", () => OpenWindow("register")),
             new Separator(this),
-            new Button(this, "Cancel", () => UserInterfaceManager.Instance.CloseCurrentWindow())
+            new Button(this, "Cancel", CloseThisWindow)
         };
     }
 
@@ -27,6 +27,6 @@ public sealed class RequireUserWindow : FullScreenWindow
 
     public override void Resume()
     {
-        UserInterfaceManager.Instance.CloseCurrentWindow();
+        CloseThisWindow();
     }
 }

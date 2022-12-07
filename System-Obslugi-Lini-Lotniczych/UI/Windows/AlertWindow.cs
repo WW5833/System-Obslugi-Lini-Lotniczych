@@ -28,13 +28,7 @@ public class AlertWindow : ModalWindow
         };
 
         alert._uiElements[0] = new Label(alert, message);
-
-        alert._uiElements[1] = new Button(
-            alert,
-            "Close",
-            UserInterfaceManager.Instance.CloseCurrentWindow,
-            alert.StartLeft + alert.Width - 5,
-            alert.StartTop + alert.Height);
+        alert._uiElements[1] = new ModalCloseButton(alert);
 
         UserInterfaceManager.Instance.OpenWindow(alert);
     }

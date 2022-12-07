@@ -35,8 +35,9 @@ public abstract class ModalWindow : GraphicsWindow
         }
     }
 
-    protected int StartTop => (System.Console.WindowHeight - Height) / 2;
-    protected int StartLeft => (System.Console.WindowWidth - Width) / 2;
+    public int StartTop => (System.Console.WindowHeight - Height) / 2;
+    public int StartLeft => (System.Console.WindowWidth - Width) / 2;
+
     public void WriteOutline()
     {
         // Clear

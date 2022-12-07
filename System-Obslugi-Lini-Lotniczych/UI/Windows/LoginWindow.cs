@@ -10,8 +10,8 @@ public sealed class LoginWindow : ModalWindow
 {
     public override UserInterfaceElement[] UserInterfaceElements { get; }
 
-    public override int Width => 50;
-    public override int Height => 5;
+    public override int Width => 30;
+    public override int Height => 4;
 
     private readonly IUserService _userService;
 
@@ -30,7 +30,9 @@ public sealed class LoginWindow : ModalWindow
             _emailInputField,
             _passwordInputField,
             new Separator(this),
-            new Button(this, "Login", OnLogin)
+            new Button(this, "Login", OnLogin),
+
+            new ModalCloseButton(this),
         };
     }
 
@@ -65,7 +67,7 @@ public sealed class LoginWindow : ModalWindow
     public override void Resume()
     {
         if (_loginSuccessful)
-            UserInterfaceManager.Instance.CloseCurrentWindow();
+            CloseThisWindow();
         else
             base.Resume();
     }

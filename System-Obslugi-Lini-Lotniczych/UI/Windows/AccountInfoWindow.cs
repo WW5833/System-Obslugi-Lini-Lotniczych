@@ -23,7 +23,8 @@ public sealed class AccountInfoWindow : FullScreenWindow
         UserInterfaceElements = new UserInterfaceElement[]
         {
             _emailLabel,
-            new Button(this, "Logout", OnLogout)
+            new Button(this, "Logout", OnLogout),
+            new Button(this, "Close", CloseThisWindow)
         };
     }
 
@@ -31,8 +32,8 @@ public sealed class AccountInfoWindow : FullScreenWindow
     {
         await _userService.LogoutUser(UserInterfaceManager.Instance.CurrentSessionId!.Value);
         UserInterfaceManager.Instance.CurrentSessionId = null;
-        
-        UserInterfaceManager.Instance.CloseCurrentWindow();
+
+        CloseThisWindow();
     }
 
     public override string Id => "account_info";
@@ -60,7 +61,7 @@ public sealed class AccountInfoWindow : FullScreenWindow
     {
         if (!UserInterfaceManager.Instance.CurrentSessionId.HasValue)
         {
-            UserInterfaceManager.Instance.CloseCurrentWindow();
+            CloseThisWindow();
             return;
         }
 

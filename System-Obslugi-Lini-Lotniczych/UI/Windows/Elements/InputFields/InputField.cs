@@ -54,7 +54,13 @@ public class InputField : InteractableUserInterfaceElement
                 return false;
 
             default:
-                return key.KeyChar != '\0';
+                if (key.KeyChar == '\0')
+                    return false;
+
+                var windowWidth = (Window is ModalWindow modal) ? modal.Width : System.Console.WindowWidth;
+                if (Value.Length == windowWidth - Text.Length - 2 - 2)
+                    return false;
+                return true;
         }
     }
 

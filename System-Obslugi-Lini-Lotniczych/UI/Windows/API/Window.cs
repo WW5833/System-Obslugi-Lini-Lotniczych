@@ -26,6 +26,11 @@ public abstract class Window : IWindow
         UserInterfaceManager.Instance.OpenWindow(window);
     }
 
+    protected static void CloseThisWindow()
+    {
+        UserInterfaceManager.Instance.CloseCurrentWindow();
+    }
+
     public void SetTitle()
     {
         System.Console.Title = this.Title;

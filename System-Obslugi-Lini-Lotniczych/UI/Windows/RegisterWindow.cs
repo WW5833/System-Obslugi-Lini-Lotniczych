@@ -48,7 +48,9 @@ public sealed class RegisterWindow : ModalWindow
             new Separator(this),
             _errorLabel,
             new Separator(this),
-            new Button(this, "Register", OnRegister)
+            new Button(this, "Register", OnRegister),
+
+            new ModalCloseButton(this),
         };
     }
 
@@ -146,7 +148,7 @@ public sealed class RegisterWindow : ModalWindow
     public override void Resume()
     {
         if(_registerSuccessful)
-            UserInterfaceManager.Instance.CloseCurrentWindow();
+            CloseThisWindow();
         else
             base.Resume();
     }
