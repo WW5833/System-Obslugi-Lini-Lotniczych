@@ -13,12 +13,12 @@ public sealed class MenuWindow : FullScreenWindow
     {
         UserInterfaceElements = new UserInterfaceElement[] {
             new Button(this, "Account", () => OpenWindow("account_info")),
+            new Button(this, "Select Airport", () => OpenWindow("airport_selection")),
             new Separator(this),
             new Button(this, "Exit", () => Environment.Exit(0)),
         };
     }
-
-    public override bool PreserveContentOnTransferControl => true;
+    
     public override string Id => "default";
     public override string Title => "Menu";
 

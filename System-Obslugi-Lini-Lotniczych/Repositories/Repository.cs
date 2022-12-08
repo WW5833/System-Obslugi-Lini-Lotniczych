@@ -189,6 +189,20 @@ internal sealed class Repository
 
     #region Airport
 
+    public async Task<IEnumerable<Airport>> GetAirports(CancellationToken cancellationToken = default)
+    {
+        await EnableLock(cancellationToken);
+        try
+        {
+            return await _context.Airports.AsNoTracking()
+                .ToArrayAsync(cancellationToken: cancellationToken);
+        }
+        finally
+        {
+            _isLocked = false;
+        }
+    }
+
     public async Task<Airport> GetAirportById(int id, CancellationToken cancellationToken = default)
     {
         await EnableLock(cancellationToken);
@@ -235,7 +249,9 @@ internal sealed class Repository
         }
     }
 
-    public async Task<IEnumerable<Ticket>> GetTicketsByFlightId(int flightId, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Ticket>> GetTicketsByFlightId(
+        int flightId,
+        CancellationToken cancellationToken = default)
     {
         await EnableLock(cancellationToken);
         try
@@ -281,7 +297,9 @@ internal sealed class Repository
         }
     }
 
-    public async Task<IEnumerable<Flight>> GetFlightsByEndAirport(int airportId, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Flight>> GetFlightsByEndAirport(
+        int airportId,
+        CancellationToken cancellationToken = default)
     {
         await EnableLock(cancellationToken);
         try
@@ -295,7 +313,9 @@ internal sealed class Repository
         }
     }
 
-    public async Task<IEnumerable<Flight>> GetFlightsByStartAirport(int airportId, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Flight>> GetFlightsByStartAirport(
+        int airportId,
+        CancellationToken cancellationToken = default)
     {
         await EnableLock(cancellationToken);
         try
@@ -309,7 +329,9 @@ internal sealed class Repository
         }
     }
 
-    public async Task<IEnumerable<Flight>> GetFlightsByState(FlightState state, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Flight>> GetFlightsByState(
+        FlightState state,
+        CancellationToken cancellationToken = default)
     {
         await EnableLock(cancellationToken);
         try

@@ -5,8 +5,6 @@ namespace LotSystem.UI.Windows.API;
 [PublicAPI]
 public abstract class FullScreenWindow : GraphicsWindow
 {
-    public override bool PreserveContentOnTransferControl => true;
-
     public override void Close()
     {
         Console.Clear();

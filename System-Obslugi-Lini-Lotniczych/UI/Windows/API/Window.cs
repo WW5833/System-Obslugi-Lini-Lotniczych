@@ -7,8 +7,6 @@ public abstract class Window : IWindow
 {
     public WindowUInterfaceManager Console { get; } = new();
 
-    public abstract bool PreserveContentOnTransferControl { get; }
-
     public abstract string Id { get; }
 
     public abstract string Title { get; }

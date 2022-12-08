@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LotSystem;
 
@@ -25,4 +26,6 @@ public static class Extensions
 
         return Activator.CreateInstance(type, args.ToArray());
     }
+
+    public static T WaitAndReturn<T>(this Task<T> task) => task.GetAwaiter().GetResult();
 }

@@ -5,8 +5,6 @@ namespace LotSystem.UI.Windows.API;
 [PublicAPI]
 public abstract class ModalWindow : GraphicsWindow
 {
-    public override bool PreserveContentOnTransferControl => true;
-
     public abstract int Width { get; }
     public abstract int Height { get; }
 

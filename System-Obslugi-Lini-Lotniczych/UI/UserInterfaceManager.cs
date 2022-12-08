@@ -21,8 +21,11 @@ public sealed class UserInterfaceManager
     public Guid? CurrentSessionId { get; set; }
     private bool _enabled = true;
 
+    public Dictionary<Type, object> InjectableTypes { get; private set; }
+
     public void Start(ILogger logger, Dictionary<Type, object> injectableTypes)
     {
+        InjectableTypes = injectableTypes;
         _logger = logger;
 
         RegisterWindows(injectableTypes);
@@ -86,7 +89,8 @@ public sealed class UserInterfaceManager
 
     public void OpenWindow(IGWindow window)
     {
-        window.Console.Parent = _windowStack.Peek().Console;
+        if (window is ModalWindow)
+            window.Console.Parent = _windowStack.Peek().Console;
 
         _windowStack.Push(window);
 
