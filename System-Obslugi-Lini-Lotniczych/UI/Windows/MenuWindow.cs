@@ -1,4 +1,5 @@
 ﻿using System;
+using LotSystem.Database.Models;
 using LotSystem.UI.Windows.API;
 using LotSystem.UI.Windows.Elements;
 using LotSystem.UI.Windows.Elements.API;
@@ -13,7 +14,8 @@ public sealed class MenuWindow : FullScreenWindow
     {
         UserInterfaceElements = new UserInterfaceElement[] {
             new Button(this, "Account", () => OpenWindow("account_info")),
-            new Button(this, "Select Airport", () => OpenWindow("airport_selection")),
+            new Button(this, "Flight List", () => OpenWindow("flight_list")),
+
             new Separator(this),
             new Button(this, "Exit", () => Environment.Exit(0)),
         };

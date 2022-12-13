@@ -37,6 +37,8 @@ public abstract class GraphicsWindow : Window, IGWindow
     {
         this.SetTitle();
         Console.RewriteScreen();
+        foreach (var item in InteractableUserInterfaceElements)
+            item.OnWindowResumed();
     }
 
     public void OnKeyPressed(ConsoleKeyInfo key)

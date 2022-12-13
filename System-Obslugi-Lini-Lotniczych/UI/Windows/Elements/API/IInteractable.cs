@@ -7,4 +7,6 @@ public interface IInteractable
     void OnSelected();
     void OnUnselected();
     void OnKeyPressed(ConsoleKeyInfo key);
+
+    void OnWindowResumed();
 }

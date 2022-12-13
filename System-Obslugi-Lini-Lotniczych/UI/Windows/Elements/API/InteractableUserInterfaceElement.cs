@@ -49,4 +49,8 @@ public abstract class InteractableUserInterfaceElement : UserInterfaceElement, I
     public virtual void OnKeyPressed(ConsoleKeyInfo key)
     {
     }
+
+    public virtual void OnWindowResumed()
+    {
+    }
 }

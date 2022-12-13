@@ -68,9 +68,8 @@ public sealed class UserInterfaceManager
         foreach (var type in GetType().Assembly.GetTypes()
                      .Where(x => x.IsClass && !x.IsAbstract && x.GetInterfaces().Contains(typeof(IGWindow))))
         {
-            var window = type.CreateInstance<IGWindow>(injectableTypes);
-
-            _windows.Add(window.Id, window);
+            if (type.TryCreateInstance<IGWindow>(injectableTypes, out var window))
+                _windows.Add(window.Id, window);
         }
     }
 

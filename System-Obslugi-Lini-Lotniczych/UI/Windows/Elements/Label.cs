@@ -23,6 +23,9 @@ public class Label : UserInterfaceElement
     private int _yPos;
     private int _xStartPos;
 
+    public int XStartPos => _xStartPos;
+    public int YPos => _yPos;
+
     public void Redraw()
     {
         Console.CursorTop = _yPos;

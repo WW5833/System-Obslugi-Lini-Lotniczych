@@ -59,9 +59,14 @@ public class WindowUInterfaceManager
     {
         _internalWrite(text.Split('\n')[0]);
 
-        int offset;
-        while ((offset = text.IndexOf('\n')) != -1)
-            _internalWriteLine(text[(offset + 1)..]);
+        int offset = 0;
+        while ((offset = text.IndexOf('\n', offset + 1)) != -1)
+        {
+            var nextOffset = text.IndexOf('\n', offset + 1);
+            if(nextOffset == -1)
+                nextOffset = text.Length;
+            _internalWriteLine(text[(offset + 1)..nextOffset]);
+        }
     }
 
     public void RemoveOneChar()
@@ -82,7 +87,7 @@ public class WindowUInterfaceManager
         lock (_lock)
         {
             while (_screenLines[_cursorTopPosition].Count < _cursorLeftPosition + text.Length)
-                _screenLines[_cursorTopPosition].Add(' ');
+                _screenLines[_cursorTopPosition].Add('\0');
 
             _screenLines[_cursorTopPosition].RemoveRange(_cursorLeftPosition, text.Length);
             _screenLines[_cursorTopPosition].InsertRange(_cursorLeftPosition, Character.Convert(text));
@@ -160,13 +165,19 @@ public class WindowUInterfaceManager
             {
                 foreach (var character in line)
                 {
+                    if(character.Char == '\0')
+                    {
+                        Console.CursorLeft++;
+                        continue;
+                    }
+
                     Console.ForegroundColor = character.ForegroundColor;
                     Console.BackgroundColor = character.BackgroundColor;
                     Console.Write(character.Char);
                 }
 
                 Console.ResetColor();
-                Console.Write('\n');
+                Console.WriteLine();
             }
 
             Console.CursorTop = _cursorTopPosition;

@@ -27,5 +27,28 @@ public static class Extensions
         return Activator.CreateInstance(type, args.ToArray());
     }
 
+    public static bool TryCreateInstance<T>(this Type type, Dictionary<Type, object> injectableTypes, out T @object)
+    {
+        List<object> args = new List<object>();
+        @object = default;
+        var ctr = type.GetConstructors().FirstOrDefault(x => x.GetParameters().Length > 0);
+        if (ctr != null)
+        {
+            foreach (var parameterInfo in ctr.GetParameters())
+            {
+                if (injectableTypes.TryGetValue(parameterInfo.ParameterType, out var value))
+                    args.Add(value);
+            }
+        }
+        else
+            ctr = type.GetConstructor(Array.Empty<Type>());
+
+        if (ctr.GetParameters().Length > args.Count)
+            return false;
+
+        @object = (T)Activator.CreateInstance(type, args.ToArray());
+        return true;
+    }
+
     public static T WaitAndReturn<T>(this Task<T> task) => task.GetAwaiter().GetResult();
 }

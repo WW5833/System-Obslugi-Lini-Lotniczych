@@ -92,3 +92,8 @@ public abstract class ModalWindow : GraphicsWindow
         this.Console.Write(this.Title);
     }
 }
+
+public interface IModalSelectWindow<T> : IGWindow
+{
+    T Value { get; }
+}

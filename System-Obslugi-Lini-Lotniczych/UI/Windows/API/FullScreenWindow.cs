@@ -21,7 +21,7 @@ public abstract class FullScreenWindow : GraphicsWindow
         base.Open();
     }
 
-    private void WriteElements()
+    protected void WriteElements()
     {
         for (var i = 0; i < UserInterfaceElements.Length; i++)
         {
