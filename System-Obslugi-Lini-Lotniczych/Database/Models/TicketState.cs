@@ -2,7 +2,6 @@
 
 public enum TicketState
 {
-    AWAITING_PAYMENT,
     PAYED,
     BOARDED,
     CANCELED,

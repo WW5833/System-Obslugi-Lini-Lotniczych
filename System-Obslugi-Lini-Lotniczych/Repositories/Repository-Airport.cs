@@ -1,10 +1,7 @@
 ﻿using LotSystem.Database.Models;
-using LotSystem.Logger.API;
 using LotSystem.Repositories.API;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 

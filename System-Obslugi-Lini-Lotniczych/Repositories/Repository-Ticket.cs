@@ -1,10 +1,7 @@
 ﻿using LotSystem.Database.Models;
-using LotSystem.Logger.API;
 using LotSystem.Repositories.API;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -59,6 +56,33 @@ internal sealed partial class Repository : ITicketRepository
 
     public async Task AddTicket(Ticket ticket, CancellationToken cancellationToken = default)
     {
-        Debug.Fail("NOT DONE"); // ToDo: FIx it
+        await EnableLock(cancellationToken);
+        try
+        {
+             _context.Tickets.Add(ticket);
+
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        finally
+        {
+            _isLocked = false;
+        }
+    }
+
+    public async Task UpdateSeat(Ticket ticket, string newSeat, CancellationToken cancellationToken = default)
+    {
+        await EnableLock(cancellationToken);
+        try
+        {
+            ticket.Seat = newSeat;
+
+            _context.Update(ticket);
+
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        finally
+        {
+            _isLocked = false;
+        }
     }
 }

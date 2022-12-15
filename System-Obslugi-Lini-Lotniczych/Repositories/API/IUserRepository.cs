@@ -13,7 +13,7 @@ public interface IUserRepository
     Task AddUser(User user, CancellationToken cancellationToken = default);
     Task UpdateUser(User user, CancellationToken cancellationToken = default);
 
-    Task<UserSession> GetSessionById(Guid id, CancellationToken cancellationToken = default); // Todo: Getting session should not return session if it is expiered
+    Task<UserSession> GetSessionById(Guid id, CancellationToken cancellationToken = default);
     Task<UserSession> GetSessionByUser(int userId, CancellationToken cancellationToken = default);
 
     Task<User> GetUserBySession(UserSession session, CancellationToken cancellationToken = default);

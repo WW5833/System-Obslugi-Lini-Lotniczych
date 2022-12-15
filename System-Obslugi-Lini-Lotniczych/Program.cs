@@ -9,10 +9,7 @@ using LotSystem.Logger;
 using System.Threading;
 using LotSystem.Services;
 using LotSystem.Services.Airport;
-using LotSystem.Database;
-using System.Linq;
-using LotSystem.Database.Models;
-using Microsoft.EntityFrameworkCore;
+using LotSystem.Repositories.API;
 
 namespace LotSystem;
 
@@ -37,7 +34,9 @@ internal static class Program
             { typeof(ILogger), logger },
             { typeof(IUserService), userService },
             { typeof(IAirportService), new AirportService(logger) },
-            { typeof(IEmailService), emailService }
+            { typeof(IEmailService), emailService },
+            { typeof(IFlightRepository), new Repository(logger) },
+            { typeof(ITicketRepository), new Repository(logger) }
         });
 
         while (!Environment.HasShutdownStarted)

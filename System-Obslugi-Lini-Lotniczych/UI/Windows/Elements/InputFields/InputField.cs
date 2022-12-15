@@ -16,6 +16,12 @@ public class InputField : InteractableUserInterfaceElement
     {
     }
 
+    public InputField(GraphicsWindow window, string text, string value)
+        : this(window, text)
+    {
+        this.Value = value;
+    }
+
     public override void Draw()
     {
         base.Draw();

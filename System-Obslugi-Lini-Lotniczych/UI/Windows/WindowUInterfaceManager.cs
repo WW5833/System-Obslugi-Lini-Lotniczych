@@ -57,6 +57,9 @@ public class WindowUInterfaceManager
 
     public void Write(string text)
     {
+        if (text.Length == 0)
+            return;
+
         _internalWrite(text.Split('\n')[0]);
 
         int offset = 0;

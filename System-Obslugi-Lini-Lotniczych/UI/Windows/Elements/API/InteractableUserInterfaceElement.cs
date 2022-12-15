@@ -13,7 +13,7 @@ public abstract class InteractableUserInterfaceElement : UserInterfaceElement, I
         Text = text;
     }
 
-    public virtual string Text { get; }
+    public virtual string Text { get; set; }
 
     public override void Draw()
     {

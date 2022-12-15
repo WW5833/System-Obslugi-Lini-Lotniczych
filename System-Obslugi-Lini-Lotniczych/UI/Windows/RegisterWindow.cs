@@ -35,7 +35,7 @@ public sealed class RegisterWindow : ModalWindow
         _phoneInputField = new PhoneNumberInputField(this, "Phone number");
         _passwordInputField = new PasswordInputField(this, "Password");
         _repeatedPasswordInputField = new PasswordInputField(this, "Repeat Password");
-        _errorLabel = new Label(this, string.Empty);
+        _errorLabel = new Label(this, "Ok");
 
         UserInterfaceElements = new UserInterfaceElement[]
         {
@@ -60,7 +60,7 @@ public sealed class RegisterWindow : ModalWindow
         var email = _emailInputField.Value;
         var firstName = _firstNameInputField.Value;
         var lastName = _lastNameInputField.Value;
-        var phone = _phoneInputField.Value; // Todo: this.PromptPhoneNumber("Phone Number");
+        var phone = _phoneInputField.Value;
         var password = _passwordInputField.Value;
         var repeatedPassword = _repeatedPasswordInputField.Value;
 

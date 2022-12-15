@@ -1,5 +1,4 @@
 ﻿using System;
-using LotSystem.Database.Models;
 using LotSystem.UI.Windows.API;
 using LotSystem.UI.Windows.Elements;
 using LotSystem.UI.Windows.Elements.API;

@@ -2,30 +2,41 @@
 using LotSystem.UI.Windows.API;
 using LotSystem.UI.Windows.Elements;
 using LotSystem.UI.Windows.Elements.API;
+using System.Collections.Generic;
+using LotSystem.Repositories.API;
 
 namespace LotSystem.UI.Windows;
 
 public sealed class AccountInfoWindow : FullScreenWindow
 {
-    public override UserInterfaceElement[] UserInterfaceElements { get; }
-    
+    private readonly List<UserInterfaceElement> userInterfaceElements = new();
+    public override UserInterfaceElement[] UserInterfaceElements => userInterfaceElements.ToArray();
 
     private readonly IUserService _userService;
 
     private readonly Label _emailLabel;
+    private readonly Label _phoneLabel;
+    private readonly Label _nameLabel;
+    private readonly Label _ticketsLabel;
 
-    public AccountInfoWindow(IUserService userService)
+    private readonly ITicketRepository _ticketRepository;
+
+    public AccountInfoWindow(IUserService userService, ITicketRepository ticketRepository)
     {
         _userService = userService;
+        _ticketRepository = ticketRepository;
 
-        _emailLabel = new Label(this, "HI");
+        _emailLabel = new Label(this, "Email: ");
+        _phoneLabel = new Label(this, "Phone: ");
+        _nameLabel = new Label(this, "Name & Last Name");
+        _ticketsLabel = new Label(this, "Tickets: ");
 
-        UserInterfaceElements = new UserInterfaceElement[]
-        {
-            _emailLabel,
-            new Button(this, "Logout", OnLogout),
-            new Button(this, "Close", CloseThisWindow)
-        };
+        userInterfaceElements.Add(_emailLabel);
+        userInterfaceElements.Add(_nameLabel);
+        userInterfaceElements.Add(_phoneLabel);
+        userInterfaceElements.Add(_ticketsLabel);
+        userInterfaceElements.Add(new Button(this, "Logout", OnLogout));
+        userInterfaceElements.Add(new Button(this, "Close", CloseThisWindow));
     }
 
     public async void OnLogout()
@@ -48,15 +59,31 @@ public sealed class AccountInfoWindow : FullScreenWindow
             return;
         }
 
-        _emailLabel.Text = _userService
+        initialized = true;
+
+        var user = _userService
             .GetUser(UserInterfaceManager.Instance.CurrentSessionId.Value)
             .GetAwaiter()
-            .GetResult()
-            .Email;
+            .GetResult();
+
+        _emailLabel.Text = "Email: " + user.Email;
+        _phoneLabel.Text = "Phone: " + user.PhoneNumber;
+
+        _nameLabel.Text = "Name: " + user.FirstName + " " + user.LastName;
+        _ticketsLabel.Text = "Tickets: ";
+
+        foreach (var ticket in user.Tickets)
+        {
+            userInterfaceElements.Insert(userInterfaceElements.Count - 2, new Button(this, $"\t{ticket.Flight.StartFrom.ShortName}->{ticket.Flight.ArriveAt.ShortName}, {ticket.Flight.TakeOffTime}, {ticket.Flight.State}, {ticket.State}", () =>
+            {
+                UserInterfaceManager.Instance.OpenWindow(new TicketDetailsWindow(_ticketRepository, ticket));
+            }));
+        }
 
         base.Open();
     }
 
+    private bool initialized = false;
     public override void Resume()
     {
         if (!UserInterfaceManager.Instance.CurrentSessionId.HasValue)
@@ -65,6 +92,9 @@ public sealed class AccountInfoWindow : FullScreenWindow
             return;
         }
 
-        this.Open();
+        if (initialized)
+            base.Resume();
+        else
+            this.Open();
     }
 }

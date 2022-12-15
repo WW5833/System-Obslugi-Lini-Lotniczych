@@ -2,6 +2,7 @@
 using LotSystem.Repositories.API;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -75,6 +76,7 @@ internal sealed partial class Repository : IUserRepository
         try
         {
             return await _context.Sessions.AsNoTracking()
+                .Where(x => !x.IsExpiered)
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
         }
         finally
@@ -103,6 +105,15 @@ internal sealed partial class Repository : IUserRepository
         try
         {
             return await _context.Users.AsNoTracking()
+
+                .Include(x => x.Tickets)
+                .ThenInclude(x => x.Flight)
+                .ThenInclude(x => x.StartFrom)
+
+                .Include(x => x.Tickets)
+                .ThenInclude(x => x.Flight)
+                .ThenInclude(x => x.ArriveAt)
+
                 .FirstOrDefaultAsync(x => session.UserId == x.Id, cancellationToken: cancellationToken);
         }
         finally

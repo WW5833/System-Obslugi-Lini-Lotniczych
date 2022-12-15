@@ -12,6 +12,8 @@ public interface ITicketRepository
     Task<IEnumerable<Ticket>> GetTicketsByUserId(int userId, CancellationToken cancellationToken = default);
 
     Task AddTicket(Ticket ticket, CancellationToken cancellationToken = default);
+
+    Task UpdateSeat(Ticket ticket, string newSeat, CancellationToken cancellationToken = default);
 }
 
 public interface ITicketAdminRepository : ITicketRepository
