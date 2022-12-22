@@ -1,5 +1,6 @@
 ﻿using LotSystem.Database.Models;
 using LotSystem.Logger.API;
+using LotSystem.Repositories;
 using LotSystem.Repositories.API;
 using System;
 using System.Collections.Generic;
@@ -16,21 +17,12 @@ public sealed class UserService : IUserService
     private readonly ILogger _logger;
     private readonly IEmailService _emailService;
 
-    public UserService(IUserRepository repository, ILogger logger, IEmailService emailService)
+    public UserService(ILogger logger, IEmailService emailService)
     {
-        _repository = repository;
         _logger = logger;
         _emailService = emailService;
-    }
 
-    public void Start()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Stop()
-    {
-        throw new NotImplementedException();
+        _repository = new Repository(logger);
     }
 
 

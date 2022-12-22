@@ -14,10 +14,13 @@ public sealed class TicketSeatEditor : ModalWindow, IModalSelectWindow<string>
 
     private readonly SeatInputField _seatInputField;
 
+    private readonly int _seatRows;
     public string Value => _seatInputField.Value;
-    public TicketSeatEditor(string value)
+    public TicketSeatEditor(string value, int rows)
     {
-        _seatInputField = new SeatInputField(this, "Seat: ", 30, value);
+        _seatRows = rows;
+
+        _seatInputField = new SeatInputField(this, "Seat: ", _seatRows, value);
 
         UserInterfaceElements = new UserInterfaceElement[]
         {

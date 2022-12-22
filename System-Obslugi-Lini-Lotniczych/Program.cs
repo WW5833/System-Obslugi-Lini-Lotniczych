@@ -18,16 +18,19 @@ internal static class Program
     private static IUserService userService;
     private static IEmailService emailService;
     private static ILogger logger;
+    private static Repository repository;
 
     private static void Main()
     {
         Console.OutputEncoding = Encoding.UTF8;
 
-        logger = new DebugLogger();
+        logger = new FileLogger();
 
-        Console.WriteLine("Starting ...");
+        logger.Info("Starting ...");
 
-        userService = new UserService(new Repository(logger), logger, emailService);
+        repository = new Repository(logger);
+
+        userService = new UserService(logger, emailService);
 
         UserInterfaceManager.Instance.Start(logger, new Dictionary<Type, object>
         {
@@ -35,8 +38,8 @@ internal static class Program
             { typeof(IUserService), userService },
             { typeof(IAirportService), new AirportService(logger) },
             { typeof(IEmailService), emailService },
-            { typeof(IFlightRepository), new Repository(logger) },
-            { typeof(ITicketRepository), new Repository(logger) }
+            { typeof(IFlightRepository), repository },
+            { typeof(ITicketRepository), repository }
         });
 
         while (!Environment.HasShutdownStarted)

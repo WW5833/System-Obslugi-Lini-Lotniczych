@@ -35,7 +35,7 @@ public sealed class TicketDetailsWindow : ModalWindow
         _ticket = ticket;
         var flight = ticket.Flight;
 
-        _seatSelectWindow = new TicketSeatEditor(ticket.Seat);
+        _seatSelectWindow = new TicketSeatEditor(ticket.Seat, ticket.Flight.SeatCount / 6);
 
         _fromToLabel = new Label(this, $"{flight.StartFrom.ShortName}->{flight.ArriveAt.ShortName}");
         _takeOffTimeLabel = new Label(this, $"Takes off at: {flight.TakeOffTime}");

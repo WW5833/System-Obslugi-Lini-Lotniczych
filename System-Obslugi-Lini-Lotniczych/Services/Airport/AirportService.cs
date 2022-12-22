@@ -13,7 +13,6 @@ internal class AirportService : IAirportService
     public AirportService(ILogger logger)
     {
         _repository = new Repository(logger);
-        // _repository = new DummyAirportRepository();
     }
 
     public async Task<IEnumerable<Database.Models.Airport>> GetAirports(CancellationToken cancellationToken = default)
