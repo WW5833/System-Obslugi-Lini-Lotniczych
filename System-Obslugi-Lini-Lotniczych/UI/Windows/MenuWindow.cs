@@ -19,7 +19,7 @@ public sealed class MenuWindow : FullScreenWindow
             new Button(this, "Exit", () => Environment.Exit(0)),
         };
     }
-    
+
     public override string Id => "default";
     public override string Title => "Menu";
 

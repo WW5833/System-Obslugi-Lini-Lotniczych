@@ -15,7 +15,7 @@ public sealed class Ticket
     public TicketState State { get; set; }
     public TicketFlags Flags { get; set; }
 
-    [MinLength(2)][MaxLength(3)] public string Seat { get; set; }
+    [MinLength(2)] [MaxLength(3)] public string Seat { get; set; }
 
     public DateTime? BoughtTime { get; set; }
 

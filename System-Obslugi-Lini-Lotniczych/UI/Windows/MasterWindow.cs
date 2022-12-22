@@ -8,7 +8,7 @@ namespace LotSystem.UI.Windows;
 internal sealed class MasterWindow : IGWindow
 {
     public bool PreserveContentOnTransferControl => false;
-    public WindowUInterfaceManager Console { get; } = new ();
+    public WindowUInterfaceManager Console { get; } = new();
     public string Id => "__entry-point";
     public string Title => throw new NotImplementedException();
     public void Open()

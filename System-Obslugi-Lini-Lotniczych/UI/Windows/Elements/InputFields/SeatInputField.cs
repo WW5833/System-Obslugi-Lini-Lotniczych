@@ -59,7 +59,7 @@ public class SeatInputField : InputField
                 if (Value.Length < 3)
                     return;
 
-                
+
                 var seat = int.Parse(Value[1..]);
 
                 if (seat == 0 || seat > RowCount)
@@ -69,7 +69,7 @@ public class SeatInputField : InputField
                     System.Console.ResetColor();
                     return;
                 }
-                
+
 
                 OnSubmit?.Invoke(Value);
                 IsValid = true;

@@ -26,7 +26,7 @@ public sealed class UserService : IUserService
     {
         var user = await _repository.GetUserByEmail(email, cancellationToken);
 
-        if(user is null)
+        if (user is null)
         {
             _logger.Debug($"[LOGIN] Failed to login {email}, user not found");
             return new LoginResponse("Incorrect credentials");
@@ -75,7 +75,7 @@ public sealed class UserService : IUserService
         };
 
         await _repository.AddUser(user, cancellationToken);
-            
+
         _logger.Debug($"[REGISTER] User registered {email}");
         return new GenericResponse();
     }

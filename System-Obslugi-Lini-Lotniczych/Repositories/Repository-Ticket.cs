@@ -59,7 +59,7 @@ internal sealed partial class Repository : ITicketRepository
         await EnableLock(cancellationToken);
         try
         {
-             _context.Tickets.Add(ticket);
+            _context.Tickets.Add(ticket);
 
             await _context.SaveChangesAsync(cancellationToken);
         }

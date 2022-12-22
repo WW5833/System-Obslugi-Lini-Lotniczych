@@ -17,7 +17,7 @@ public interface IUserRepository
     Task<UserSession> GetSessionByUser(int userId, CancellationToken cancellationToken = default);
 
     Task<User> GetUserBySession(UserSession session, CancellationToken cancellationToken = default);
-    
+
     Task<Guid> CreateSession(User user, DateTime expireDate, CancellationToken cancellationToken = default);
     Task ExpireSession(Guid sessionId, CancellationToken cancellationToken = default);
 }

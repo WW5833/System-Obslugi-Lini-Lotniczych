@@ -15,7 +15,7 @@ public sealed class UserInterfaceManager
     private readonly Dictionary<string, IGWindow> _windows = new();
 
     private ILogger _logger;
-    
+
     private readonly Stack<IGWindow> _windowStack = new();
 
     public Guid? CurrentSessionId { get; set; }

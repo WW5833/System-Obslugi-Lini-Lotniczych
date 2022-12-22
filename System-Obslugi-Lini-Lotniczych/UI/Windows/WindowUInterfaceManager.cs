@@ -27,7 +27,7 @@ public class WindowUInterfaceManager
             BackgroundColor = Console.BackgroundColor;
         }
 
-        public static implicit operator Character (char c)
+        public static implicit operator Character(char c)
         {
             return new Character(c);
         }
@@ -66,7 +66,7 @@ public class WindowUInterfaceManager
         while ((offset = text.IndexOf('\n', offset + 1)) != -1)
         {
             var nextOffset = text.IndexOf('\n', offset + 1);
-            if(nextOffset == -1)
+            if (nextOffset == -1)
                 nextOffset = text.Length;
             _internalWriteLine(text[(offset + 1)..nextOffset]);
         }
@@ -168,7 +168,7 @@ public class WindowUInterfaceManager
             {
                 foreach (var character in line)
                 {
-                    if(character.Char == '\0')
+                    if (character.Char == '\0')
                     {
                         Console.CursorLeft++;
                         continue;
@@ -194,7 +194,7 @@ public class WindowUInterfaceManager
         get => _cursorLeftPosition;
         set
         {
-            lock(_lock) Console.CursorLeft = _cursorLeftPosition = value;
+            lock (_lock) Console.CursorLeft = _cursorLeftPosition = value;
         }
     }
 

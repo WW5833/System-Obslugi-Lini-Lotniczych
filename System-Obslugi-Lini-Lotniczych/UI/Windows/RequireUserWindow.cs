@@ -7,7 +7,7 @@ namespace LotSystem.UI.Windows;
 public sealed class RequireUserWindow : FullScreenWindow
 {
     public override UserInterfaceElement[] UserInterfaceElements { get; }
-    
+
     public RequireUserWindow()
     {
         UserInterfaceElements = new UserInterfaceElement[]

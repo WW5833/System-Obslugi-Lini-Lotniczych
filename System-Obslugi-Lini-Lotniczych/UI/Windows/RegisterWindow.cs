@@ -147,7 +147,7 @@ public sealed class RegisterWindow : ModalWindow
 
     public override void Resume()
     {
-        if(_registerSuccessful)
+        if (_registerSuccessful)
             CloseThisWindow();
         else
             base.Resume();

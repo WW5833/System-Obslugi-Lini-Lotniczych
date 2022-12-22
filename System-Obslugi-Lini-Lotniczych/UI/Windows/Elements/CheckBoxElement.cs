@@ -18,14 +18,14 @@ public class CheckBoxElement : InteractableUserInterfaceElement
         base.Draw();
 
         System.Console.ResetColor();
-        Console.Write($"[{(Value ? "X": " ")}] {Text}");
+        Console.Write($"[{(Value ? "X" : " ")}] {Text}");
     }
 
     public override void Redraw()
     {
         Console.CursorTop = YPos;
         Console.CursorLeft = XStartPos;
-        Console.Write($"[{(Value ? "X": " ")}]");
+        Console.Write($"[{(Value ? "X" : " ")}]");
         System.Console.ResetColor();
         Console.Write($" {Text}");
     }
