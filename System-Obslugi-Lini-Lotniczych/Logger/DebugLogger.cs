@@ -5,6 +5,14 @@ namespace LotSystem.Logger;
 
 internal class DebugLogger : ILogger
 {
+    public void Database(object message)
+    {
+        var old = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+        Console.WriteLine($"[DATABASE] {message}");
+        Console.ForegroundColor = old;
+    }
+
     public void Debug(object message)
     {
         var old = Console.ForegroundColor;

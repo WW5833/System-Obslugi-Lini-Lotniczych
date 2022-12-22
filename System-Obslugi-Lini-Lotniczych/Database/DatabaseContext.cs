@@ -26,7 +26,7 @@ public sealed class DatabaseContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlite($"Data Source={_path};");
-        optionsBuilder.LogTo(_logger.Warn, Microsoft.Extensions.Logging.LogLevel.Warning);
+        optionsBuilder.LogTo(_logger.Database, Microsoft.Extensions.Logging.LogLevel.Information);
         optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
     }
 }

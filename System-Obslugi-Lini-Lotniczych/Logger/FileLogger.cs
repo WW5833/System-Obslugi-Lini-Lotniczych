@@ -12,13 +12,27 @@ internal class FileLogger : ILogger
 
     public FileLogger()
     {
-        _stream = File.Create($"Log_{DateTime.Now:yyyy-MM-dd_HH:mm:ss}.log");
+        if (!Directory.Exists("Logs"))
+            Directory.CreateDirectory("Logs");
+        _stream = File.Open($"Logs/Log_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
     }
 
     private void Log(string msg)
     {
         lock (_lock)
+        {
             _stream.Write(Encoding.UTF8.GetBytes($"[{DateTime.Now:HH:mm:ss.fff}] {msg}{Environment.NewLine}"));
+            _stream.Flush();
+        }
+    }
+
+    public void Database(object message)
+    {
+        lock (_lock)
+        {
+            _stream.Write(Encoding.UTF8.GetBytes($"{message}{Environment.NewLine}"));
+            _stream.Flush();
+        }
     }
 
     public void Debug(object message)
