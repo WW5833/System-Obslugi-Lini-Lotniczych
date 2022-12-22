@@ -6,6 +6,7 @@ using LotSystem.Repositories;
 using LotSystem.Repositories.API;
 
 namespace LotSystem.Services.Airport;
+
 internal class AirportService : IAirportService
 {
     private readonly IAirportRepository _repository;

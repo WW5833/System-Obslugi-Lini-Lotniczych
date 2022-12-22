@@ -3,7 +3,6 @@ using LotSystem.Logger.API;
 using LotSystem.Repositories;
 using LotSystem.Repositories.API;
 using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -15,16 +14,13 @@ public sealed class UserService : IUserService
 {
     private readonly IUserRepository _repository;
     private readonly ILogger _logger;
-    private readonly IEmailService _emailService;
 
-    public UserService(ILogger logger, IEmailService emailService)
+    public UserService(ILogger logger)
     {
         _logger = logger;
-        _emailService = emailService;
 
         _repository = new Repository(logger);
     }
-
 
     public async Task<LoginResponse> LoginUser(string email, string password, CancellationToken cancellationToken = default)
     {
@@ -84,48 +80,6 @@ public sealed class UserService : IUserService
         return new GenericResponse();
     }
 
-    public const string EmailVerificationTitle = "Email Verification";
-    public const string EmailVerificationContent = 
-        @"Hi!
-Here is your verification code: {code}
-If you didn't just try to sign in then reset your password now!";
-    public async Task<GenericResponse> SendEmailVerificationRequest(int userId, CancellationToken cancellationToken = default)
-    {
-        var user = await _repository.GetUserById(userId, cancellationToken);
-
-        if (user is null)
-            throw new ArgumentException($"User with supplied userId({userId}) does not exist", nameof(userId));
-
-        if ((user.Flags & UserFlags.EMAIL_VERIFIED) != 0)
-            throw new Exception($"User is already verified");
-
-        List<char> chars = new()
-        {
-            '0', '0',
-            '1', '1',
-            '2', '2',
-            '3', '3',
-            '4', '4',
-            '5', '5',
-            '6', '6',
-            '7', '7',
-            '8', '8',
-            '9', '9',
-        };
-
-        string verificationCode = "";
-        for (int i = 0; i < 6; i++)
-        {
-            var index = Random.Shared.Next(0, chars.Count);
-            verificationCode += chars[index];
-            chars.RemoveAt(index);
-        }
-
-        await _emailService.SendEmail(user.Email, EmailVerificationTitle, EmailVerificationContent.Replace("{code}", verificationCode), cancellationToken);
-
-        return new GenericResponse();
-    }
-
     public async Task<GenericResponse> LogoutUser(Guid sessionId, CancellationToken cancellationToken = default)
     {
         await _repository.ExpireSession(sessionId, cancellationToken);
@@ -141,8 +95,6 @@ If you didn't just try to sign in then reset your password now!";
 
         return await _repository.GetUserBySession(session, cancellationToken);
     }
-
-        
 
     public readonly struct LoginResponse
     {

@@ -16,7 +16,6 @@ namespace LotSystem;
 internal static class Program
 {
     private static IUserService userService;
-    private static IEmailService emailService;
     private static ILogger logger;
     private static Repository repository;
 
@@ -30,14 +29,13 @@ internal static class Program
 
         repository = new Repository(logger);
 
-        userService = new UserService(logger, emailService);
+        userService = new UserService(logger);
 
         UserInterfaceManager.Instance.Start(logger, new Dictionary<Type, object>
         {
             { typeof(ILogger), logger },
             { typeof(IUserService), userService },
             { typeof(IAirportService), new AirportService(logger) },
-            { typeof(IEmailService), emailService },
             { typeof(IFlightRepository), repository },
             { typeof(ITicketRepository), repository }
         });

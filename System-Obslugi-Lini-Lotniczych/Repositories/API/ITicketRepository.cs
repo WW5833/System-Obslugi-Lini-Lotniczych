@@ -15,8 +15,3 @@ public interface ITicketRepository
 
     Task UpdateSeat(Ticket ticket, string newSeat, CancellationToken cancellationToken = default);
 }
-
-public interface ITicketAdminRepository : ITicketRepository
-{
-    Task UpdateTicket(Ticket ticket, CancellationToken cancellationToken = default);
-}

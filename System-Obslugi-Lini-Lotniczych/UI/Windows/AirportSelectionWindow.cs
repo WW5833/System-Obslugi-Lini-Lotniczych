@@ -9,7 +9,6 @@ namespace LotSystem.UI.Windows;
 
 public sealed class AirportSelectionWindow : ModalWindow, IModalSelectWindow<Airport>
 {
-    private readonly IAirportService _airportService;
     public Airport Value { get; private set; }
     public override UserInterfaceElement[] UserInterfaceElements { get; }
 
@@ -23,7 +22,6 @@ public sealed class AirportSelectionWindow : ModalWindow, IModalSelectWindow<Air
 
     public AirportSelectionWindow(IAirportService airportService)
     {
-        _airportService = airportService;
         var airports = airportService.GetAirports().WaitAndReturn().ToArray();
         UserInterfaceElements = new UserInterfaceElement[2 + airports.Length];
         for (int i = 0; i < airports.Length; i++)

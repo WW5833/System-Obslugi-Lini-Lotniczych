@@ -12,8 +12,6 @@ namespace LotSystem.UI.Windows;
 
 public sealed class FlightListFilterWindow : ModalWindow, IModalSelectWindow<IEnumerable<Flight>>
 {
-    private readonly IAirportService _airportService;
-
     public override UserInterfaceElement[] UserInterfaceElements { get; }
 
     public override string Id => "flight_list_filter";
@@ -35,7 +33,6 @@ public sealed class FlightListFilterWindow : ModalWindow, IModalSelectWindow<IEn
     {
         _fromSelector = new SelectField<AirportSelectionWindow, Airport>(this, "From");
         _toSelector = new SelectField<AirportSelectionWindow, Airport>(this, "To");
-        _airportService = airportService;
 
         UserInterfaceElements = new UserInterfaceElement[]
         {
