@@ -1,6 +1,5 @@
 ﻿using LotSystem.Database.Models;
 using LotSystem.Repositories.API;
-using LotSystem.Services.Airport;
 using LotSystem.UI.Windows.API;
 using LotSystem.UI.Windows.Elements;
 using LotSystem.UI.Windows.Elements.API;
@@ -19,9 +18,9 @@ public sealed class FlightListWindow : FullScreenWindow
 
     private readonly IModalSelectWindow<IEnumerable<Flight>> _filterWindow;
 
-    public FlightListWindow(IAirportService airportService, IFlightRepository flightRepository)
+    public FlightListWindow(IFlightRepository flightRepository)
     {
-        _filterWindow = new FlightListFilterWindow(airportService, flightRepository);
+        _filterWindow = new FlightListFilterWindow(flightRepository);
 
         _uiElements.Add(new Button(this, "Filter", () => UserInterfaceManager.Instance.OpenWindow(_filterWindow)));
         _uiElements.Add(new Separator(this));

@@ -18,12 +18,7 @@ public sealed class TicketDetailsWindow : ModalWindow
 
     public override int Height => 6;
 
-    private readonly Label _fromToLabel;
-    private readonly Label _takeOffTimeLabel;
-    private readonly Label _classLabel;
-    private readonly Label _additionalLuggageLabel;
     private readonly Button _seatLabel;
-    private readonly Label _stateLabel;
 
     private readonly ITicketRepository _ticketRepository;
 
@@ -37,10 +32,10 @@ public sealed class TicketDetailsWindow : ModalWindow
 
         _seatSelectWindow = new TicketSeatEditor(ticket.Seat, ticket.Flight.SeatCount / 6);
 
-        _fromToLabel = new Label(this, $"{flight.StartFrom.ShortName}->{flight.ArriveAt.ShortName}");
-        _takeOffTimeLabel = new Label(this, $"Takes off at: {flight.TakeOffTime}");
-        _classLabel = new Label(this, "Class: " + ((ticket.Flags & TicketFlags.ECONOMY_TICKET) != 0 ? "Economy" : "Business"));
-        _additionalLuggageLabel = new Label(this, "Additional Luggage: " + ((ticket.Flags & TicketFlags.ADDITIONAL_LUGGAGE) != 0 ? "Yes" : "No"));
+        var fromToLabel = new Label(this, $"{flight.StartFrom.ShortName}->{flight.ArriveAt.ShortName}");
+        var takeOffTimeLabel = new Label(this, $"Takes off at: {flight.TakeOffTime}");
+        var classLabel = new Label(this, "Class: " + ((ticket.Flags & TicketFlags.ECONOMY_TICKET) != 0 ? "Economy" : "Business"));
+        var additionalLuggageLabel = new Label(this, "Additional Luggage: " + ((ticket.Flags & TicketFlags.ADDITIONAL_LUGGAGE) != 0 ? "Yes" : "No"));
         _seatLabel = new Button(
             this,
             $"Seat: {ticket.Seat}",
@@ -48,16 +43,16 @@ public sealed class TicketDetailsWindow : ModalWindow
             {
                 UserInterfaceManager.Instance.OpenWindow(_seatSelectWindow);
             });
-        _stateLabel = new Label(this, $"Status: {ticket.State}");
+        var stateLabel = new Label(this, $"Status: {ticket.State}");
 
         UserInterfaceElements = new UserInterfaceElement[]
         {
-            _fromToLabel,
-            _takeOffTimeLabel,
-            _classLabel,
-            _additionalLuggageLabel,
+            fromToLabel,
+            takeOffTimeLabel,
+            classLabel,
+            additionalLuggageLabel,
             _seatLabel,
-            _stateLabel,
+            stateLabel,
 
             new ModalCloseButton(this),
         };

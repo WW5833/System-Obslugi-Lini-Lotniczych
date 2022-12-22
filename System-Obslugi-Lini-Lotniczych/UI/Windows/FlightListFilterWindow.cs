@@ -1,6 +1,5 @@
 ﻿using LotSystem.Database.Models;
 using LotSystem.Repositories.API;
-using LotSystem.Services.Airport;
 using LotSystem.UI.Windows.API;
 using LotSystem.UI.Windows.Elements;
 using LotSystem.UI.Windows.Elements.API;
@@ -29,7 +28,7 @@ public sealed class FlightListFilterWindow : ModalWindow, IModalSelectWindow<IEn
 
     private readonly IFlightRepository _flightRepository;
 
-    public FlightListFilterWindow(IAirportService airportService, IFlightRepository flightRepository)
+    public FlightListFilterWindow(IFlightRepository flightRepository)
     {
         _fromSelector = new SelectField<AirportSelectionWindow, Airport>(this, "From");
         _toSelector = new SelectField<AirportSelectionWindow, Airport>(this, "To");
@@ -38,13 +37,13 @@ public sealed class FlightListFilterWindow : ModalWindow, IModalSelectWindow<IEn
         {
             _fromSelector,
             _toSelector,
-            new Button(this, "Apply", onUpdate),
+            new Button(this, "Apply", OnUpdate),
         };
 
         _flightRepository = flightRepository;
     }
 
-    private async void onUpdate()
+    private async void OnUpdate()
     {
         var flights = await _flightRepository.GetFlights();
 

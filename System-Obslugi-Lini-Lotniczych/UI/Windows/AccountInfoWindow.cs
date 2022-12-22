@@ -9,8 +9,8 @@ namespace LotSystem.UI.Windows;
 
 public sealed class AccountInfoWindow : FullScreenWindow
 {
-    private readonly List<UserInterfaceElement> userInterfaceElements = new();
-    public override UserInterfaceElement[] UserInterfaceElements => userInterfaceElements.ToArray();
+    private readonly List<UserInterfaceElement> _userInterfaceElements = new();
+    public override UserInterfaceElement[] UserInterfaceElements => _userInterfaceElements.ToArray();
 
     private readonly IUserService _userService;
 
@@ -31,12 +31,12 @@ public sealed class AccountInfoWindow : FullScreenWindow
         _nameLabel = new Label(this, "Name & Last Name");
         _ticketsLabel = new Label(this, "Tickets: ");
 
-        userInterfaceElements.Add(_emailLabel);
-        userInterfaceElements.Add(_nameLabel);
-        userInterfaceElements.Add(_phoneLabel);
-        userInterfaceElements.Add(_ticketsLabel);
-        userInterfaceElements.Add(new Button(this, "Logout", OnLogout));
-        userInterfaceElements.Add(new Button(this, "Close", CloseThisWindow));
+        _userInterfaceElements.Add(_emailLabel);
+        _userInterfaceElements.Add(_nameLabel);
+        _userInterfaceElements.Add(_phoneLabel);
+        _userInterfaceElements.Add(_ticketsLabel);
+        _userInterfaceElements.Add(new Button(this, "Logout", OnLogout));
+        _userInterfaceElements.Add(new Button(this, "Close", CloseThisWindow));
     }
 
     public async void OnLogout()
@@ -59,7 +59,7 @@ public sealed class AccountInfoWindow : FullScreenWindow
             return;
         }
 
-        initialized = true;
+        _initialized = true;
 
         var user = _userService
             .GetUser(UserInterfaceManager.Instance.CurrentSessionId.Value)
@@ -74,7 +74,7 @@ public sealed class AccountInfoWindow : FullScreenWindow
 
         foreach (var ticket in user.Tickets)
         {
-            userInterfaceElements.Insert(userInterfaceElements.Count - 2, new Button(this, $"\t{ticket.Flight.StartFrom.ShortName}->{ticket.Flight.ArriveAt.ShortName}, {ticket.Flight.TakeOffTime}, {ticket.Flight.State}, {ticket.State}", () =>
+            _userInterfaceElements.Insert(_userInterfaceElements.Count - 2, new Button(this, $"\t{ticket.Flight.StartFrom.ShortName}->{ticket.Flight.ArriveAt.ShortName}, {ticket.Flight.TakeOffTime}, {ticket.Flight.State}, {ticket.State}", () =>
             {
                 UserInterfaceManager.Instance.OpenWindow(new TicketDetailsWindow(_ticketRepository, ticket));
             }));
@@ -83,7 +83,7 @@ public sealed class AccountInfoWindow : FullScreenWindow
         base.Open();
     }
 
-    private bool initialized = false;
+    private bool _initialized;
     public override void Resume()
     {
         if (!UserInterfaceManager.Instance.CurrentSessionId.HasValue)
@@ -92,7 +92,7 @@ public sealed class AccountInfoWindow : FullScreenWindow
             return;
         }
 
-        if (initialized)
+        if (_initialized)
             base.Resume();
         else
             this.Open();

@@ -12,16 +12,16 @@ public static class Extensions
 
     public static object CreateInstance(this Type type, Dictionary<Type, object> injectableTypes)
     {
-        List<object> args = new List<object>();
+        List<object> args = new();
 
         var ctr = type.GetConstructors().FirstOrDefault(x => x.GetParameters().Length > 0);
-        if (ctr != null)
+        if (ctr == null)
+            return Activator.CreateInstance(type, args.ToArray());
+
+        foreach (var parameterInfo in ctr.GetParameters())
         {
-            foreach (var parameterInfo in ctr.GetParameters())
-            {
-                if (injectableTypes.TryGetValue(parameterInfo.ParameterType, out var value))
-                    args.Add(value);
-            }
+            if (injectableTypes.TryGetValue(parameterInfo.ParameterType, out var value))
+                args.Add(value);
         }
 
         return Activator.CreateInstance(type, args.ToArray());
@@ -29,7 +29,7 @@ public static class Extensions
 
     public static bool TryCreateInstance<T>(this Type type, Dictionary<Type, object> injectableTypes, out T @object)
     {
-        List<object> args = new List<object>();
+        List<object> args = new();
         @object = default;
         var ctr = type.GetConstructors().FirstOrDefault(x => x.GetParameters().Length > 0);
         if (ctr != null)
@@ -41,7 +41,7 @@ public static class Extensions
             }
         }
         else
-            ctr = type.GetConstructor(Array.Empty<Type>());
+            ctr = type.GetConstructor(Array.Empty<Type>())!;
 
         if (ctr.GetParameters().Length > args.Count)
             return false;

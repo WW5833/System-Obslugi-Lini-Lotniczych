@@ -14,8 +14,6 @@ namespace LotSystem.UI.Windows;
 [UsedImplicitly]
 public sealed class BuyTicketWindow : ModalWindow
 {
-    private readonly IAirportService _airportService;
-
     public override UserInterfaceElement[] UserInterfaceElements { get; }
 
     public override string Id => "buy_ticket";
@@ -37,7 +35,6 @@ public sealed class BuyTicketWindow : ModalWindow
 
     public BuyTicketWindow(IAirportService airportService, IUserService userService, ITicketRepository ticketRepository)
     {
-        _airportService = airportService;
         _userService = userService;
         _additionalLuggageCheckBox = new CheckBoxElement(this, "Additional Luggage?");
         _businessCLassCheckBox = new CheckBoxElement(this, "Business Class?");
@@ -52,16 +49,16 @@ public sealed class BuyTicketWindow : ModalWindow
             _businessCLassCheckBox,
 
             new Separator(this),
-            new Button(this, "Buy", onBuy),
+            new Button(this, "Buy", OnBuy),
             new ModalCloseButton(this),
         };
 
         _ticketRepository = ticketRepository;
     }
 
-    private bool closeOnResume;
+    private bool _closeOnResume;
 
-    private async void onBuy()
+    private async void OnBuy()
     {
         if (!_seatInputField.IsValid)
             return;
@@ -83,14 +80,14 @@ public sealed class BuyTicketWindow : ModalWindow
             });
 
         AlertWindow.Show("Ticket reserved", "Ticket has been reserved");
-        closeOnResume = true;
+        _closeOnResume = true;
     }
 
     public override void Resume()
     {
         // base.Resume();
 
-        if (closeOnResume)
+        if (_closeOnResume)
         {
             CloseThisWindow();
             CloseThisWindow();

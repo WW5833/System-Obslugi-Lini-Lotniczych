@@ -17,8 +17,6 @@ public class SelectField<T, TValue> : InteractableUserInterfaceElement where T :
         _window = typeof(T).CreateInstance<T>(types);
     }
 
-    public Action OnClicked { get; }
-
     public override void Draw()
     {
         base.Draw();
